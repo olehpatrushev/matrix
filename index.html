@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patron Games - Matrix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link href="./css/site.css" rel="stylesheet">
+    <link href="./css/matrix.css" rel="stylesheet">
+    <link href="./lib/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<canvas id="canvasHolder"></canvas>
+
+<div class="col-sm-4 form-group">
+    <label for="frequency">Frequency</label>
+    <input type="range" min="0" max="100" class="form-control" id="frequency">
+</div>
+<div class="col-sm-4 form-group">
+    <label for="quantity">Quantity</label>
+    <input type="range" min="0" max="1000" class="form-control" id="quantity">
+</div>
+<div class="col-sm-4 form-group">
+    <label>Control</label>
+    <div class="text-right">
+        <button class="btn" id="reset">Reset</button>
+        <button class="btn" id="fullscreen">Fullscreen</button>
+    </div>
+</div>
+
+<script src="./js/jquery-3.3.1.min.js"></script>
+<script src="./js/matrix.js"></script>
+<script type="application/javascript">
+    $(document).ready(function () {
+        'use strict';
+
+        var frequency,
+            quantity;
+
+        frequency = $('#frequency');
+        quantity = $('#quantity');
+
+        frequency.val(100 - filter.redrawTimeOut);
+        frequency.on('change', function () {
+            filter.redrawTimeOut = 100 - $(this).val();
+        });
+
+        quantity.val(filter.matrixCount);
+        quantity.on('change', function () {
+            filter.matrixCount = $(this).val();
+        });
+
+        $(window).on('resize', function () {
+            if (filter.updateCanvasDimensionsTimeout !== null) {
+                clearInterval(filter.updateCanvasDimensionsTimeout);
+                filter.updateCanvasDimensionsTimeout = null;
+            }
+            filter.updateCanvasDimensionsTimeout = setTimeout(function () {
+                filter.reset();
+                filter.updateCanvasDimensions();
+            }, 1000);
+        });
+
+        $('#reset').on('click', function () {
+            filter.reset();
+        });
+
+        $('#fullscreen').on('click', function () {
+            if (filter.canvasHolder.webkitRequestFullScreen) {
+                filter.canvasHolder.webkitRequestFullScreen();
+            }
+            else {
+                filter.canvasHolder.mozRequestFullScreen();
+            }
+        });
+
+        filter.updateCanvasDimensions();
+        filter.draw();
+    });
+</script>
+</body>
+</html>
